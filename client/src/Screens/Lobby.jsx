@@ -1,22 +1,26 @@
+/* eslint-disable no-unused-vars */
 import { useState, useCallback, useEffect } from "react";
 import { useSocket } from "../Context/SocketProvider";
+import { useNavigate } from 'react-router-dom'
 
 const Lobby = () => {
     const [email, setEmail] = useState("");
-    const [roomNumber, setRoomNumber] = useState("");
+    const [room, setRoom] = useState("");
     const socket = useSocket();
-    const handleSubmit = useCallback((e) => {
+    const navigate = useNavigate();
+    const handleSubmitForm = useCallback((e) => {
         e.preventDefault();
         // console.log({
-        //     email, roomNumber,
+        //     email, room,
         // });
-        socket.emit('room:join', { email, roomNumber });
+        socket.emit('room:join', { email, room });
 
-    }, [email, roomNumber, socket]);
+    }, [email, room, socket]);
     const handleJoinRoom = useCallback((data) => {
-        const { email, roomNumber } = data;
-        console.log(email, roomNumber);
-    }, []);
+        const { email, room } = data;
+        // console.log(email, room);
+        navigate(`room/${room}`);
+    }, [navigate]);
 
     useEffect(() => {
         // socket.on('room:join', (data) => {
@@ -31,12 +35,12 @@ const Lobby = () => {
     return (
         <>
             <div className="text-5xl">Lobby</div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitForm}>
                 <label htmlFor="email">Email Id</label>
                 <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 <br />
                 <label htmlFor="room">Room Number</label>
-                <input type="text" id="room" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} />
+                <input type="text" id="room" value={room} onChange={(e) => setRoom(e.target.value)} />
                 <br />
                 <button>Join Now</button>
             </form>
